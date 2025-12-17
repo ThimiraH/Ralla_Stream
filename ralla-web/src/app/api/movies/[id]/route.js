@@ -1,0 +1,25 @@
+import connectToDatabase from '@/lib/db';
+import Movie from '@/models/Movie';
+import { NextResponse } from 'next/server';
+
+export async function GET(request, { params }) {
+  try {
+    await connectToDatabase();
+    
+    // --- වෙනස් කළ කොටස (FIX) ---
+    // params කියන්නේ Promise එකක් නිසා, අපි ඒක await කරන්න ඕන.
+    const { id } = await params; 
+
+    // Database එකෙන් ID එකට අදාල ෆිල්ම් එක හොයනවා
+    const movie = await Movie.findById(id);
+
+    if (!movie) {
+      return NextResponse.json({ success: false, error: "Movie not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, data: movie }, { status: 200 });
+
+  } catch (error) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+  }
+}
