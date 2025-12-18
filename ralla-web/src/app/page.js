@@ -50,7 +50,7 @@ export default async function Home() {
     },
     { 
         name: "Squid Game", 
-        image: "https://image.tmdb.org/t/p/w500/dDlE2FcE0WJgE205ChpGzRs7U2G.jpg", 
+        image: "https://tse2.mm.bing.net/th/id/OIP.rkbPOAu4QePzQ5-Evp6YfQHaEK?cb=ucfimg2&ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3", 
         progress: 30, episode: "S1:E3", timeLeft: "45m"
     }
   ];
