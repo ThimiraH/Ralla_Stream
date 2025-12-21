@@ -23,6 +23,14 @@ const UserSchema = new mongoose.Schema({
     default: "user",
     enum: ["user", "admin", "vip"],
   },
-}, { timestamps: true });
+  watchlist: [{
+    type: mongoose.Schema.Types.ObjectId, // String වෙනුවට ObjectId දාන්න ඕන
+    ref: "Movie", // මෙතනින් තමයි කියන්නේ මේක Movie model එකට සම්බන්ධයි කියලා
+  }],
+  forgotPasswordToken: String,
+  forgotPasswordTokenExpiry: Date,
+},
+
+  { timestamps: true });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);

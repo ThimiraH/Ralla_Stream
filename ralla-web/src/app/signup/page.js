@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { toast } from 'react-hot-toast'; // Popup
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid'; // Icons
 
 export default function SignupPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Password Toggle
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,29 +19,25 @@ export default function SignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
 
     try {
-      // 1. අපේ Register API එකට Data යවනවා
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || "Something went wrong");
+        toast.error(data.message || "Something went wrong"); // Error Popup
         setLoading(false);
       } else {
-        // 2. Register වුනාම Login Page එකට යවනවා
+        toast.success("Account Created Successfully! Please Login."); // Success Popup
         router.push('/login');
       }
     } catch (err) {
-      setError("Something went wrong");
+      toast.error("Network Error. Try again.");
       setLoading(false);
     }
   };
@@ -59,12 +57,6 @@ export default function SignupPage() {
             <p className="text-gray-400 text-sm">Create an account to start watching.</p>
         </div>
 
-        {error && (
-            <div className="bg-red-500/10 border border-red-500/50 text-red-400 text-sm p-3 rounded-lg mb-4 text-center">
-                {error}
-            </div>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-4">
             <div>
                 <label className="text-gray-400 text-xs uppercase font-bold ml-1 mb-1 block">Full Name</label>
@@ -72,7 +64,7 @@ export default function SignupPage() {
                     type="text" 
                     name="name"
                     placeholder="John Doe"
-                    className="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
+                    className="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition"
                     onChange={handleChange}
                     required
                 />
@@ -83,27 +75,42 @@ export default function SignupPage() {
                     type="email" 
                     name="email"
                     placeholder="name@example.com"
-                    className="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
+                    className="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition"
                     onChange={handleChange}
                     required
                 />
             </div>
+            
+            {/* Password Field with Eye Icon */}
             <div>
                 <label className="text-gray-400 text-xs uppercase font-bold ml-1 mb-1 block">Password</label>
-                <input 
-                    type="password" 
-                    name="password"
-                    placeholder="Create a password"
-                    className="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
-                    onChange={handleChange}
-                    required
-                />
+                <div className="relative">
+                    <input 
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        placeholder="Create a password"
+                        className="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition pr-10"
+                        onChange={handleChange}
+                        required
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-3.5 text-gray-400 hover:text-white transition cursor-pointer"
+                    >
+                        {showPassword ? (
+                            <EyeSlashIcon className="h-5 w-5" />
+                        ) : (
+                            <EyeIcon className="h-5 w-5" />
+                        )}
+                    </button>
+                </div>
             </div>
 
             <button 
                 type="submit" 
                 disabled={loading}
-                className="w-full bg-linear-to-r from-blue-600 to-purple-600 text-white font-bold py-3 rounded-xl hover:opacity-90 transition disabled:opacity-50 mt-4"
+                className="w-full bg-linear-to-r from-blue-600 to-purple-600 text-white font-bold py-3 rounded-xl hover:opacity-90 transition disabled:opacity-50 mt-4 cursor-pointer"
             >
                 {loading ? "Creating Account..." : "Sign Up"}
             </button>

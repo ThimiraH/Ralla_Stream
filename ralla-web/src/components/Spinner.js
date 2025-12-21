@@ -45,7 +45,7 @@ export default function Spinner() {
       </div>
 
       <p className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-500 text-xs font-bold tracking-[0.3em] uppercase animate-pulse">
-        Loading Rella...
+        Loading Ralla...
       </p>
 
     </div>

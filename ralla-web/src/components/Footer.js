@@ -9,7 +9,7 @@ export default function Footer() {
         {/* Social Media & Top Links */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
             <h2 className="text-2xl font-bold tracking-wider text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-500 mb-4 md:mb-0">
-                RELLA
+                RALLA
             </h2>
             <div className="flex gap-6">
                 {/* Social Icons (SVG) */}

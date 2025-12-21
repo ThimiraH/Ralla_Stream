@@ -41,7 +41,7 @@ export default function CategoryHero({ movies }) {
           {movie.name}
         </h1>
         <p className="text-gray-200 text-sm md:text-lg line-clamp-3 mb-8 max-w-xl drop-shadow-lg font-medium">
-           {movie.year} • {movie.genre || movie.category} • Watch the latest episode now on Rella.
+           {movie.year} • {movie.genre || movie.category} • Watch the latest episode now on Ralla.
         </p>
         
         <div className="flex gap-4">

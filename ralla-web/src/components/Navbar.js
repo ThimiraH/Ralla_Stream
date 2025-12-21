@@ -65,7 +65,7 @@ export default function Navbar() {
                         <Image src="/Ralla-Logo.png" alt="Rella Logo" fill className="object-contain" />
                     </div>
                     <span className="text-2xl font-bold tracking-wider text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-500">
-                        RELLA
+                        RALLA
                     </span>
                 </Link>
 
@@ -92,7 +92,7 @@ export default function Navbar() {
                         onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
                         onFocus={() => searchQuery.length > 1 && setShowDropdown(true)}
                     />
-                    <button type="submit" className="absolute right-1 top-1 bottom-1 bg-blue-600 hover:bg-blue-700 text-white rounded-full w-10 flex items-center justify-center transition">
+                    <button type="submit" className="absolute right-1 top-1 bottom-1 bg-blue-600 hover:bg-blue-700 text-white rounded-full w-10 flex items-center justify-center transition cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                     </button>
                 </form>
@@ -125,20 +125,20 @@ export default function Navbar() {
             {/* --- RIGHT SECTION: Auth & Profile --- */}
             <div className="flex items-center gap-5 text-gray-300">
 
-                <button className="hidden sm:block hover:text-white transition">
+                <button className="hidden sm:block hover:text-white transition cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
                     </svg>
                 </button>
 
-                <button className="hidden sm:block hover:text-white transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                <Link href="/mylist" className="hidden sm:flex flex-col items-center group hover:text-white transition cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 group-hover:fill-current">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
                     </svg>
-                </button>
+                </Link>
 
                 {/* VIP Badge */}
-                <button className="flex items-center gap-1 text-[#E5B54D] hover:text-[#ffd670] transition font-bold text-sm">
+                <button className="flex items-center gap-1 text-[#E5B54D] hover:text-[#ffd670] transition font-bold text-sm cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.75a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .913-.143Z" clipRule="evenodd" /></svg>
                     <span>VIP</span>
                 </button>
@@ -181,7 +181,7 @@ export default function Navbar() {
                                 )}
                                 <button
                                     onClick={() => signOut()}
-                                    className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-800 transition"
+                                    className="w-full cursor-pointer text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-800 transition"
                                 >
                                     Sign Out
                                 </button>

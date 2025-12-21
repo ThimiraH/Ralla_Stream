@@ -1,11 +1,12 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google"; // 1. Google Provider ගත්තා
+import GoogleProvider from "next-auth/providers/google";
 import connectToDatabase from "@/lib/db";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
 
-const handler = NextAuth({
+// 1. මෙන්න මේ විදිහට 'authOptions' කියලා වෙනම හදලා export කරන්න ඕන
+export const authOptions = {
   providers: [
     // --- Google Login ---
     GoogleProvider({
@@ -31,42 +32,33 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    // 2. Google වලින් එන කෙනා Database එකේ නැත්නම් Save කරගන්න කෑල්ල
     async signIn({ user, account }) {
       if (account.provider === "google") {
         try {
           const { name, email, image } = user;
           await connectToDatabase();
-
-          // බලනවා මේ email එකෙන් කෙනෙක් ඉන්නවද කියලා
           const existingUser = await User.findOne({ email });
 
           if (!existingUser) {
-            // නැත්නම් අලුත් User කෙනෙක් හදනවා
             await User.create({
               name,
               email,
               image,
-              role: "user", // Google වලින් එන අයටත් මුලින් 'user' රෝල් එක දෙනවා
-              password: "", // Google අයගේ password එකක් නෑ (හිස්ව තියනවා)
+              role: "user",
+              password: "",
             });
           }
-          return true; // Login වෙන්න දෙනවා
+          return true;
         } catch (error) {
           console.log("Error checking if user exists: ", error);
           return false;
         }
       }
-      return true; // Credentials වලින් එන අයට නිකන්ම යන්න දෙනවා
+      return true;
     },
 
     async jwt({ token, user }) {
         if (user) {
-            // Google වලින් ආවම user object එකේ role එක කෙලින්ම නැති වෙන්න පුළුවන්, 
-            // ඒ නිසා අපි Database එකෙන් ආයේ check කරගන්නවා නම් වඩා හොඳයි.
-            // නමුත් දැනට සරලව මෙහෙම තියමු. Login වුනාම ඊළඟ පාර මේක වැඩ කරනවා.
-            
-            // අපි පොඩි ආරක්ෂිත පියවරක් ගමු:
             if(!token.role && user.email) {
                  await connectToDatabase();
                  const dbUser = await User.findOne({ email: user.email });
@@ -94,6 +86,9 @@ const handler = NextAuth({
   pages: {
     signIn: "/login",
   },
-});
+};
+
+// 2. අන්තිමට මේ විදිහට Handler එක හදන්න
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
