@@ -28,6 +28,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com', // Google Drive images සමහර විට එන්නේ මේකෙන්
+      },
+            {
+        protocol: 'https',
+        hostname: 'pub-ada2c8befdbf4478915e2eb19d151929.r2.dev',
       }
     ],
   },

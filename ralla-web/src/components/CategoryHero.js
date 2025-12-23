@@ -23,17 +23,17 @@ export default function CategoryHero({ movies }) {
     <div className="relative h-[65vh] md:h-[85vh] w-full overflow-hidden">
       {/* Background Image */}
       <div key={movie.id} className="absolute inset-0 transition-opacity duration-1000 ease-in-out">
-          <div className="absolute inset-0 bg-linear-to-r from-black via-black/40 to-transparent z-10"></div>
-          <div className="absolute inset-0 bg-linear-to-t from-[#0a0a0a] via-[#0a0a0a]/40 to-transparent z-10"></div>
+          <div className="absolute inset-0 bg-linear-to-r from-black via-black/2 to-transparent z-10"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-[#0a0a0a] via-[#0a0a0a]/2 to-transparent z-10"></div>
           <img 
             src={movie.image} 
             alt={movie.name} 
-            className="w-full h-full object-cover opacity-70"
+            className="w-full h-full object-cover opacity-100"
           />
       </div>
 
       {/* Content - Text එක ටිකක් උඩින් තියමු Overlap නොවෙන්න */}
-      <div className="absolute top-[25%] md:top-[30%] left-4 md:left-12 z-20 max-w-2xl pt-10">
+      <div className="absolute top-[35%] md:top-[28%] left-4 md:left-12 z-20 max-w-2xl pt-5">
         <span className="text-blue-400 font-bold tracking-wider uppercase text-sm md:text-base mb-2 block">
             Featured in {movie.category}
         </span>

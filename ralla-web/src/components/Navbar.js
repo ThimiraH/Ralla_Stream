@@ -5,8 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from "next-auth/react"; // 1. Session විස්තර ගන්න
+import { BellIcon } from "@heroicons/react/24/outline";
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
+    const pathname = usePathname();
     const { data: session, status } = useSession(); // User ඉන්නවද බලනවා
     const [isScrolled, setIsScrolled] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -51,6 +54,38 @@ export default function Navbar() {
             router.push(`/search?q=${searchQuery}`);
         }
     };
+
+
+    const [notifications, setNotifications] = useState([]);
+    const [showNotiDropdown, setShowNotiDropdown] = useState(false);
+    const unreadCount = notifications.filter(n => !n.isRead).length;
+
+    // Notifications Fetch කරන්න (සෑම තත්පර 30කට වරක් හෝ Page load එකේදී)
+    useEffect(() => {
+        if (session) {
+            const fetchNoti = async () => {
+                const res = await fetch("/api/notifications");
+                const data = await res.json();
+                setNotifications(data);
+            };
+            fetchNoti();
+            // Optional: Realtime ඕන නම් interval එකක් දාන්න
+        }
+    }, [session]);
+
+    const handleNotiClick = async () => {
+        setShowNotiDropdown(!showNotiDropdown);
+        if (unreadCount > 0) {
+            // Mark as read
+            await fetch("/api/notifications", { method: "PUT" });
+            // UI update (local)
+            setNotifications(notifications.map(n => ({ ...n, isRead: true })));
+        }
+    };
+
+    if (pathname && pathname.startsWith("/admin")) {
+        return null;
+    }
 
     return (
         <nav
@@ -131,6 +166,52 @@ export default function Navbar() {
                     </svg>
                 </button>
 
+                {/* Notification Bell */}
+                {session && (
+                    <div className="relative">
+                        <button onClick={handleNotiClick} className="relative p-2 text-gray-300 hover:text-white transition">
+                            <BellIcon className="w-6 h-6 cursor-pointer" />
+                            {unreadCount > 0 && (
+                                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-600 rounded-full border border-black"></span>
+                            )}
+                        </button>
+
+                        {/* Dropdown */}
+                        {showNotiDropdown && (
+                            <div className="absolute right-0 mt-3 w-80 bg-[#181818] border border-gray-700 rounded-xl shadow-2xl py-2 z-50 overflow-hidden">
+                                <div className="px-4 py-2 border-b border-gray-700 text-sm font-bold text-white">Notifications</div>
+                                <div className="max-h-64 overflow-y-auto">
+                                    {notifications.length === 0 ? (
+                                        <div className="p-4 text-center text-gray-500 text-sm">No notifications</div>
+                                    ) : (
+                                        notifications.map((n) => (
+                                            <div key={n._id} onClick={() => router.push(`/movie/${n.movieId}`)} className="px-4 py-3 hover:bg-gray-700/50 cursor-pointer flex gap-3 border-b border-gray-800 last:border-none">
+                                                <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-600 shrink-0 flex items-center justify-center">
+                                                    {n.sender.image ? (
+                                                        <img src={n.sender.image} alt="" className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        // Default Avatar (නමේ මුල් අකුර)
+                                                        <span className="text-sm font-bold text-white">
+                                                            {n.sender.name?.charAt(0).toUpperCase() || "?"}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="text-sm text-gray-200">
+                                                        <span className="font-bold">{n.sender.name}</span> {n.text}
+                                                    </p>
+                                                    <p className="text-[10px] text-gray-500 mt-1">{new Date(n.createdAt).toLocaleDateString()}</p>
+                                                </div>
+                                                {!n.isRead && <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>}
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 <Link href="/mylist" className="hidden sm:flex flex-col items-center group hover:text-white transition cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 group-hover:fill-current">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
@@ -177,7 +258,7 @@ export default function Navbar() {
                                     <p className="text-gray-500 text-xs truncate">{session.user.email}</p>
                                 </div>
                                 {session.user.role === 'admin' && (
-                                    <Link href="/admin/add" className="block px-4 py-2 text-sm text-green-400 hover:bg-gray-800">Admin Panel</Link>
+                                    <Link href="/admin" className="block px-4 py-2 text-sm text-green-400 hover:bg-gray-800">Admin Panel</Link>
                                 )}
                                 <button
                                     onClick={() => signOut()}

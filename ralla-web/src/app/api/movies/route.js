@@ -27,7 +27,7 @@ export async function POST(request) {
 export async function GET() {
     try {
         await connectToDatabase();
-        const movies = await movies.find({});
+        const movies = await Movie.find({}).sort({ createdAt: -1 });
         return NextResponse.json({ success: true, data: movies });
     } catch (error) {
         return NextResponse.json({ success: false, error: error.message }, { status: 400 });
