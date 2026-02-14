@@ -23,6 +23,9 @@ const commentSchema = new Schema(
       ref: "Comment",
       default: null, // සාමාන්‍ය කමෙන්ට් වලට මේක null වෙනවා
     },
+
+    season: { type: Number },
+    episode: { type: Number },
   },
   { timestamps: true } // වෙලාව ඉබේම වැටෙනවා
 );

@@ -108,7 +108,7 @@ export default function Navbar() {
                     <Link href="/" className="hover:text-blue-400 transition">Home</Link>
                     <Link href="/category/TV Series" className="hover:text-blue-400 transition">TV Series</Link>
                     <Link href="/category/movie" className="hover:text-blue-400 transition">Movies</Link>
-                    <Link href="/category/anime" className="hover:text-blue-400 transition">Anime</Link>
+                    <Link href="/category/anime" className="hover:text-blue-400 transition">Animations</Link>
                     <Link href="/category/variety" className="hover:text-blue-400 transition">Variety</Link>
                     <Link href="/category/News & Updates" className="hover:text-blue-400 transition">News & Updates</Link>
                 </div>
@@ -257,7 +257,7 @@ export default function Navbar() {
                                     <p className="text-white text-sm font-bold truncate">{session.user.name}</p>
                                     <p className="text-gray-500 text-xs truncate">{session.user.email}</p>
                                 </div>
-                                {session.user.role === 'admin' && (
+                                {session.user.isAdmin && (
                                     <Link href="/admin" className="block px-4 py-2 text-sm text-green-400 hover:bg-gray-800">Admin Panel</Link>
                                 )}
                                 <button

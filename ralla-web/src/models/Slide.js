@@ -15,6 +15,8 @@ const SlideSchema = new mongoose.Schema(
     link: { type: String },
     active: { type: Boolean, default: true },
     order: { type: Number, default: 0 },
+
+    category: { type: String, default: "Home" },
   },
   { timestamps: true }
 );

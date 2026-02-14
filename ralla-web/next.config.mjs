@@ -32,7 +32,12 @@ const nextConfig = {
             {
         protocol: 'https',
         hostname: 'pub-ada2c8befdbf4478915e2eb19d151929.r2.dev',
-      }
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.shopify.com',
+      },
+
     ],
   },
 

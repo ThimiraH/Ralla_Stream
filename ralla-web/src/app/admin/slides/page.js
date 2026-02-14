@@ -24,6 +24,7 @@ export default function SlidesAdminPage() {
     const [formData, setFormData] = useState({
         title: "",
         description: "",
+        category: "Home",
         type: "image", // Default 'image'
         imageUrl: "", // Poster or Main Image
         videoUrl: "", // Only for video
@@ -59,6 +60,7 @@ export default function SlidesAdminPage() {
         setEditingId(slide._id);
         setFormData({
             title: slide.title,
+            category: slide.category || "Home",
             description: slide.description,
             type: slide.type,
             imageUrl: slide.imageUrl,
@@ -73,7 +75,7 @@ export default function SlidesAdminPage() {
     // 4. Cancel Edit
     const cancelEdit = () => {
         setEditingId(null);
-        setFormData({ title: "", description: "", type: "image", imageUrl: "", videoUrl: "", tag: "NEW", link: "" });
+        setFormData({ title: "", description: "", type: "image", imageUrl: "", videoUrl: "", tag: "NEW", link: "",category: "Home", });
     };
 
     // 5. Submit Form (Add or Update)
@@ -154,6 +156,26 @@ export default function SlidesAdminPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <input name="title" required value={formData.title} onChange={handleChange} placeholder="Slide Title (e.g. Avatar)" className="bg-black border border-gray-700 rounded-lg p-3 text-white outline-none focus:border-blue-500" />
                         <input name="tag" value={formData.tag} onChange={handleChange} placeholder="Tag (e.g. NEW, TRENDING)" className="bg-black border border-gray-700 rounded-lg p-3 text-white outline-none focus:border-blue-500" />
+                    </div>
+
+                    {/* Form එක ඇතුලේ, Type buttons වලට පස්සේ මේක දාන්න */}
+                    <div>
+                        <label className="text-xs text-gray-400 font-bold mb-1 block uppercase">Display Location</label>
+                        <select
+                            name="category"
+                            value={formData.category}
+                            onChange={handleChange}
+                            className="w-full bg-black border border-gray-700 rounded-lg p-3 text-white outline-none focus:border-blue-500"
+                        >
+                            <option value="Home">Home Page</option>
+                            <option value="Movies">Movies Page</option>
+                            <option value="TV Series">TV Series Page</option>
+                            <option value="Anime">Anime Page</option>
+                            <option value="Donghua">Donghua Page</option>
+                            <option value="K-Drama">K-Drama Page</option>
+                            <option value="C-Drama">C-Drama Page</option>
+                            <option value="Hollywood">Hollywood Page</option>
+                        </select>
                     </div>
 
                     <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description..." rows="3" className="w-full bg-black border border-gray-700 rounded-lg p-3 text-white outline-none focus:border-blue-500" />

@@ -12,7 +12,7 @@ export default function Hero() {
   useEffect(() => {
     const fetchSlides = async () => {
       try {
-        const res = await fetch("/api/slides"); // Active Slides විතරක් එනවා
+        const res = await fetch("/api/slides?category=Home"); // Active Slides විතරක් එනවා
         const data = await res.json();
         if (data.success && data.data.length > 0) {
           setSlides(data.data);

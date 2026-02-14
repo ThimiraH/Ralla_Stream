@@ -13,7 +13,7 @@ export const authOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
-    
+
     // --- Email/Password Login ---
     CredentialsProvider({
       name: "Credentials",
@@ -24,10 +24,13 @@ export const authOptions = {
 
         if (!user) throw new Error("No user found with this email");
 
+        // Google වලින් හදපු අයට password නැති නිසා check එකක් දාමු
+        if (!user.password) throw new Error("Please login with Google");
+
         const checkPassword = await bcrypt.compare(credentials.password, user.password);
         if (!checkPassword) throw new Error("Password does not match");
 
-        return { id: user._id, name: user.name, email: user.email, role: user.role, image: user.image };
+        return { id: user._id, name: user.name, email: user.email, isAdmin: user.isAdmin, image: user.image };
       },
     }),
   ],
@@ -44,7 +47,6 @@ export const authOptions = {
               name,
               email,
               image,
-              role: "user",
               password: "",
             });
           }
@@ -58,23 +60,35 @@ export const authOptions = {
     },
 
     async jwt({ token, user }) {
-        if (user) {
-            if(!token.role && user.email) {
-                 await connectToDatabase();
-                 const dbUser = await User.findOne({ email: user.email });
-                 if(dbUser) token.role = dbUser.role;
-                 if(dbUser) token.id = dbUser._id;
-            } else {
-                token.role = user.role;
-                token.id = user.id;
-            }
+      // User කෙනෙක් Log වෙන වෙලාවට (First Login)
+      if (user) {
+        token.id = user.id;
+        token.isAdmin = user.isAdmin;
+        token._id = user._id || user.id;
+      }
+
+      // හැම Request එකකදීම Database එකෙන් අලුත්ම Status එක ගන්නවා
+      // (නැත්නම් Admin දුන්න ගමන් Refresh වෙන්නේ නෑ)
+      if (token.email) {
+        await connectToDatabase();
+        const dbUser = await User.findOne({ email: token.email });
+        if (dbUser) {
+          token.id = dbUser._id.toString();
+          token._id = dbUser._id;
+          token.isAdmin = dbUser.isAdmin; // DB එකෙන් අලුත්ම අගය ගන්නවා
         }
-        return token;
+      }
+      return token;
     },
     async session({ session, token }) {
-      if (token) {
+      if (token && session.user) {
+
+        // Token එකේ තියෙන ID එක Session එකට දානවා
+        session.user.id = token.id || token._id; 
+        session.user._id = token.id || token._id; // MongoDB ID එකත්
+
         session.user.role = token.role;
-        session.user.id = token.id;
+        session.user.isAdmin = token.isAdmin; // 👇 Token එකෙන් Session එකට දානවා
       }
       return session;
     },

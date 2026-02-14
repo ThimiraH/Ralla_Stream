@@ -11,9 +11,8 @@ export default function InfoTabs({ description, cast }) {
       <div className="flex border-b border-gray-800">
         <button
           onClick={() => setActiveTab("description")}
-          className={`flex-1 py-3 text-sm font-bold transition-all relative ${
-            activeTab === "description" ? "text-blue-500" : "text-gray-400 hover:text-white"
-          }`}
+          className={`flex-1 py-3 text-sm font-bold transition-all relative ${activeTab === "description" ? "text-blue-500" : "text-gray-400 hover:text-white"
+            }`}
         >
           Description
           {activeTab === "description" && (
@@ -22,9 +21,8 @@ export default function InfoTabs({ description, cast }) {
         </button>
         <button
           onClick={() => setActiveTab("cast")}
-          className={`flex-1 py-3 text-sm font-bold transition-all relative ${
-            activeTab === "cast" ? "text-blue-500" : "text-gray-400 hover:text-white"
-          }`}
+          className={`flex-1 py-3 text-sm font-bold transition-all relative ${activeTab === "cast" ? "text-blue-500" : "text-gray-400 hover:text-white"
+            }`}
         >
           Cast
           {activeTab === "cast" && (
@@ -40,26 +38,50 @@ export default function InfoTabs({ description, cast }) {
             {description}
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-4">
-            {/* Dummy Cast Data if not provided */}
-            {(cast && cast.length > 0 ? cast : [
-                { name: "Sung Jin-Woo", role: "Main Character", img: "/placeholder.jpg" },
-                { name: "Cha Hae-In", role: "Hunter", img: "/placeholder.jpg" }
-            ]).map((actor, idx) => (
-              <div key={idx} className="flex items-center gap-3 bg-gray-800/50 p-2 rounded-lg">
-                 <div className="w-10 h-10 rounded-full bg-gray-700 overflow-hidden shrink-0">
-                    {/* Image එකක් නැත්නම් අකුරක් පෙන්වමු */}
-                    <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500">
-                        {actor.name.charAt(0)}
+          // <div className="grid grid-cols-2 gap-4">
+          //   {/* Dummy Cast Data if not provided */}
+          //   {(cast && cast.length > 0 ? cast : [
+          //       { name: "Sung Jin-Woo", role: "Main Character", img: "/placeholder.jpg" },
+          //       { name: "Cha Hae-In", role: "Hunter", img: "/placeholder.jpg" }
+          //   ]).map((actor, idx) => (
+          //     <div key={idx} className="flex items-center gap-3 bg-gray-800/50 p-2 rounded-lg">
+          //        <div className="w-10 h-10 rounded-full bg-gray-700 overflow-hidden shrink-0">
+          //           {/* Image එකක් නැත්නම් අකුරක් පෙන්වමු */}
+          //           <div className="w-full h-full flex items-center justify-center text-xs font-bold text-gray-500">
+          //               {actor.name.charAt(0)}
+          //           </div>
+          //        </div>
+          //        <div>
+          //           <p className="text-xs font-bold text-gray-200">{actor.name}</p>
+          //           <p className="text-[10px] text-gray-500">{actor.role || "Cast"}</p>
+          //        </div>
+          //     </div>
+          //   ))}
+          // </div>
+           activeTab === 'cast' && (
+            <div className="grid grid-cols-3 gap-4">
+              {cast && cast.length > 0 ? (
+                cast.map((actor, idx) => (
+                  <div key={idx} className="text-center">
+                    {/* Actor Image */}
+                    <div className="w-16 h-16 mx-auto rounded-full overflow-hidden bg-gray-800 border border-gray-700 mb-2">
+                      {actor.image ? (
+                        <img src={actor.image} alt={actor.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">N/A</div>
+                      )}
                     </div>
-                 </div>
-                 <div>
-                    <p className="text-xs font-bold text-gray-200">{actor.name}</p>
-                    <p className="text-[10px] text-gray-500">{actor.role || "Cast"}</p>
-                 </div>
-              </div>
-            ))}
-          </div>
+                    <p className="text-xs text-gray-300">{actor.name}</p>
+                  </div>
+                ))
+              ) : (
+                // 👇 Cast නැති විට පෙන්වන Message එක
+                <div className="col-span-3 py-8 text-center">
+                  <p className="text-gray-500 text-sm">No cast details added yet.</p>
+                </div>
+              )}
+            </div>
+          )
         )}
       </div>
     </div>

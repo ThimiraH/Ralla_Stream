@@ -21,8 +21,9 @@ export default function WatchlistButton({ movieId }) {
           const res = await fetch("/api/watchlist");
           const data = await res.json();
           // එන ලිස්ට් එකේ අපේ movieId එක තියෙනවද බලනවා
-          if (data.watchlist.includes(movieId)) {
-            setAdded(true);
+          if (data.watchlist && Array.isArray(data.watchlist)) {
+            const isAdded = data.watchlist.some(id => id.toString() === movieId.toString());
+            setAdded(isAdded);
           }
         } catch (error) {
           console.error("Error checking watchlist", error);
@@ -43,7 +44,7 @@ export default function WatchlistButton({ movieId }) {
 
     // Optimistic Update (API එක එන්න කලින් පාට මාරු කරනවා වේගවත් බව පෙන්වන්න)
     const previousState = added;
-    setAdded(!previousState); 
+    setAdded(!previousState);
 
     try {
       const res = await fetch("/api/watchlist", {
@@ -60,9 +61,9 @@ export default function WatchlistButton({ movieId }) {
         toast.error(data.message);
       } else {
         if (data.added) {
-            toast.success("Added to My List ✅");
+          toast.success("Added to My List ✅");
         } else {
-            toast.success("Removed from My List ❌");
+          toast.success("Removed from My List ❌");
         }
         router.refresh();
       }
@@ -75,10 +76,10 @@ export default function WatchlistButton({ movieId }) {
   if (checking) {
     // Check කරන අතරතුර පොඩි Loading එකක්
     return (
-        <button className="flex items-center gap-2 px-6 py-3 rounded-full font-bold bg-gray-800/50 text-gray-500 border border-gray-700 cursor-wait">
-            <span className="w-4 h-4 rounded-full border-2 border-gray-500 border-t-transparent animate-spin"></span>
-            Wait..
-        </button>
+      <button className="flex items-center gap-2 px-6 py-3 rounded-full font-bold bg-gray-800/50 text-gray-500 border border-gray-700 cursor-wait">
+        <span className="w-4 h-4 rounded-full border-2 border-gray-500 border-t-transparent animate-spin"></span>
+        Wait..
+      </button>
     );
   }
 
@@ -86,11 +87,10 @@ export default function WatchlistButton({ movieId }) {
     <button
       onClick={handleToggle}
       disabled={loading}
-      className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 ${
-        added
+      className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold transition-all transform hover:scale-105 active:scale-95 ${added
           ? "bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-900/20"
           : "bg-gray-800/80 text-white hover:bg-gray-700 border border-gray-600 backdrop-blur-md"
-      }`}
+        }`}
     >
       {added ? (
         <>

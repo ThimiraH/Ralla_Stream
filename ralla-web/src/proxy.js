@@ -20,7 +20,7 @@ export async function proxy(req) {
     }
 
     // B. Login වෙලා, හැබැයි role එක 'admin' නෙවෙයි නම් -> Home Page එකට එලවනවා
-    if (token.role !== "admin") {
+    if (token.isAdmin !== true) {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }

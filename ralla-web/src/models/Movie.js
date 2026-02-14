@@ -7,10 +7,24 @@ const { Schema } = mongoose;
 const EpisodeSchema = new Schema({
   episodeNumber: { type: Number, required: true }, // Episode 01, 02...
   title: { type: String, required: true }, // Episode Name
-  videoUrl: { type: String, required: true }, // Episode එකේ වීඩියෝ ලින්ක් එක
+  videoSources: [
+    {
+      quality: { type: String, default: "720p" }, // 1080p, 720p, 360p
+      url: { type: String, required: true }        // R2 Link Episode එකේ වීඩියෝ ලින්ක් එක
+    }
+  ],
   thumbnailUrl: { type: String }, // (Optional) Episode එකට වෙනම ෆොටෝ එකක්
   runtime: { type: String }, // උදා: "45 min"
-});
+  views: { type: Number, default: 0 },
+  likedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  subtitles: [
+    {
+      label: { type: String },   // e.g. "Sinhala"
+      langCode: { type: String }, // e.g. "si"
+      url: { type: String }      // R2 Link
+    }
+  ]
+},{ timestamps: true });;
 
 // --- 2. Season Schema (Season එකක් ඇතුලේ Episodes ගොඩක් තියෙනවා) ---
 const SeasonSchema = new Schema({
@@ -28,10 +42,12 @@ const MovieSchema = new Schema({
     type: String,
     required: true,
   },
-  videoUrl: {
-    type: String,
-    required: false, // වෙනස් කළා: TV Series වලට මේක හිස්ව තියෙන්න පුළුවන් නිසා false කළා
-  },
+  videoSources: [
+    {
+      quality: { type: String, default: "1080p" },
+      url: { type: String },
+    }
+  ],
   thumbnailUrl: {
     type: String,
     required: true, // පෝස්ටර් එක
@@ -68,7 +84,19 @@ const MovieSchema = new Schema({
       image: { type: String } // නළුවාගේ පින්තූරය
     }
   ],
-});
+  subtitles: [
+    {
+      label: { type: String },   // e.g. "English", "Sinhala"
+      langCode: { type: String }, // e.g. "en", "si"
+      url: { type: String }      // R2 Link එක
+    }
+  ],
+  views: {
+    type: Number,
+    default: 0, // මුලින්ම බිංදුවයි
+  },
+  likedBy: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+},{ timestamps: true });
 
 // Model එක කලින් හැදිලා නම් ඒක ගන්න, නැත්නම් අලුතින් හදන්න
 export default mongoose.models.Movie || mongoose.model('Movie', MovieSchema);

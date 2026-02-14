@@ -8,11 +8,16 @@ export async function GET(request) {
   
   const { searchParams } = new URL(request.url);
   const isAdmin = searchParams.get("admin") === "true"; // Admin ද කියලා බලනවා
+  const category = searchParams.get("category");
 
   try {
     let query = {};
     if (!isAdmin) {
         query = { active: true }; // User ට පෙන්වන්නේ Active ඒවා විතරයි
+    }
+
+    if (category) {
+        query.category = category;
     }
 
     // Order එක අනුව පිළිවෙලට ගන්නවා

@@ -8,8 +8,10 @@ import {
   UsersIcon, 
   PhotoIcon, 
   ChartBarIcon, 
-  ArrowLeftOnRectangleIcon 
+  ArrowLeftOnRectangleIcon, 
+  VideoCameraIcon
 } from "@heroicons/react/24/outline";
+import AdminHeader from "@/components/AdminHeader";
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
@@ -19,6 +21,7 @@ export default function AdminLayout({ children }) {
     { name: "Movies & Series", href: "/admin/movies", icon: FilmIcon },
     { name: "Users", href: "/admin/users", icon: UsersIcon },
     { name: "Hero Slides", href: "/admin/slides", icon: PhotoIcon }, // ඔයා ඉල්ලපු Slide Manager එක
+    { name: "Media Manager", href:"/admin/media", icon: VideoCameraIcon},
   ];
 
   return (
@@ -66,14 +69,8 @@ export default function AdminLayout({ children }) {
       {/* --- Main Content Area --- */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Header */}
-        <header className="h-16 bg-[#111]/50 backdrop-blur-md border-b border-gray-800 flex items-center justify-between px-8">
-            <h2 className="font-bold text-gray-200">Admin Control Panel</h2>
-            <div className="flex items-center gap-4">
-                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center font-bold text-sm">
-                    A
-                </div>
-            </div>
-        </header>
+
+        <AdminHeader />
 
         {/* Dynamic Page Content */}
         <div className="flex-1 overflow-y-auto p-8 scrollbar-thin scrollbar-thumb-gray-700">

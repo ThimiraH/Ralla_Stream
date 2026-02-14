@@ -25,11 +25,11 @@ export async function POST(request) {
 
 // 2. දත්ත ලබා ගැනීම (GET Request - පසුවට ඕන වෙයි)
 export async function GET() {
-    try {
-        await connectToDatabase();
-        const movies = await Movie.find({}).sort({ createdAt: -1 });
-        return NextResponse.json({ success: true, data: movies });
-    } catch (error) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 400 });
-    }
+  try {
+    await connectToDatabase();
+    const movies = await Movie.find({}).sort({ createdAt: -1 });
+    return NextResponse.json({ success: true, data: movies });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+  }
 }

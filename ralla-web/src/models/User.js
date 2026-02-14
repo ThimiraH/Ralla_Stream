@@ -23,6 +23,10 @@ const UserSchema = new mongoose.Schema({
     default: "user",
     enum: ["user", "admin", "vip"],
   },
+  isAdmin: {
+    type: Boolean,
+    default: false, // කවුරු හරි අලුතින් ආවොත් එයා Admin නෙවෙයි (Member)
+  },
   watchlist: [{
     type: mongoose.Schema.Types.ObjectId, // String වෙනුවට ObjectId දාන්න ඕන
     ref: "Movie", // මෙතනින් තමයි කියන්නේ මේක Movie model එකට සම්බන්ධයි කියලා

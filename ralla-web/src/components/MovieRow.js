@@ -62,6 +62,12 @@ export default function MovieRow({ title, movies }) {
                   className="w-full h-full object-cover rounded-lg shadow-md hover:shadow-blue-500/40"
                 />
 
+                {movie.latestBadge && (
+                  <div className="absolute top-2 right-2 bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-md z-10 max-w-[85%] truncate">
+                    {movie.latestBadge}
+                  </div>
+                )}
+
                 {/* Hover Overlay with Info */}
                 <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent opacity-0 hover:opacity-100 transition-opacity flex flex-col justify-end p-4 rounded-lg">
                   <h3 className="text-white font-bold text-sm md:text-base">{movie.name}</h3>
@@ -70,7 +76,7 @@ export default function MovieRow({ title, movies }) {
               </div>
 
             </Link>
-            
+
           ))}
         </div>
 

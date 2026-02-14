@@ -2,65 +2,117 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { PlayIcon, InformationCircleIcon } from "@heroicons/react/24/solid";
 
-export default function CategoryHero({ movies }) {
-  const [currentMovieIndex, setCurrentMovieIndex] = useState(0);
-  const heroMovies = movies.slice(0, 5); 
+
+export default function CategoryHero({ category }) {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [slides, setSlides] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (heroMovies.length < 2) return;
+    const fetchSlides = async () => {
+      try {
+        // අදාළ Category එකේ slides විතරක් ඉල්ලනවා
+        const res = await fetch(`/api/slides?category=${encodeURIComponent(category)}`);
+        const data = await res.json();
+        if (data.success && data.data.length > 0) {
+          setSlides(data.data);
+        }
+      } catch (error) {
+        console.error("Error loading category slides", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (category) {
+      fetchSlides();
+    }
+  }, [category]);
+
+  // 2. Auto Slide Logic
+  useEffect(() => {
+    if (slides.length < 2) return;
     const interval = setInterval(() => {
-      setCurrentMovieIndex((prevIndex) => (prevIndex + 1) % heroMovies.length);
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, [heroMovies.length]);
+  }, [slides.length]);
 
-  if (heroMovies.length === 0) return null;
+  if (loading) return <div className="h-[60vh] md:h-[80vh] bg-[#0a0a0a] animate-pulse"></div>;
 
-  const movie = heroMovies[currentMovieIndex];
+  // Slide මුකුත් නැත්නම් මුකුත් පෙන්නන්නේ නෑ (හෝ Default Image එකක් දාන්න පුළුවන්)
+  if (slides.length === 0) return null;
+
+  const slide = slides[currentSlide];
 
   return (
     <div className="relative h-[65vh] md:h-[85vh] w-full overflow-hidden">
       {/* Background Image */}
-      <div key={movie.id} className="absolute inset-0 transition-opacity duration-1000 ease-in-out">
-          <div className="absolute inset-0 bg-linear-to-r from-black via-black/2 to-transparent z-10"></div>
-          <div className="absolute inset-0 bg-linear-to-t from-[#0a0a0a] via-[#0a0a0a]/2 to-transparent z-10"></div>
-          <img 
-            src={movie.image} 
-            alt={movie.name} 
-            className="w-full h-full object-cover opacity-100"
-          />
-      </div>
+      {slides.map((item, index) => (
+        <div
+          key={item._id}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"}`}
+        >
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-linear-to-r from-black/90 via-black/40 to-transparent z-20"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-[#0a0a0a] via-transparent to-transparent z-20"></div>
 
-      {/* Content - Text එක ටිකක් උඩින් තියමු Overlap නොවෙන්න */}
-      <div className="absolute top-[35%] md:top-[28%] left-4 md:left-12 z-20 max-w-2xl pt-5">
-        <span className="text-blue-400 font-bold tracking-wider uppercase text-sm md:text-base mb-2 block">
-            Featured in {movie.category}
-        </span>
-        <h1 className="text-4xl md:text-7xl font-extrabold text-white mb-4 drop-shadow-2xl leading-tight">
-          {movie.name}
+          {/* Media (Video or Image) */}
+          {item.type === "video" ? (
+            <video
+              className="w-full h-full object-cover"
+              src={item.videoUrl}
+              poster={item.imageUrl}
+              autoPlay loop muted playsInline
+            />
+          ) : (
+            <img
+              src={item.imageUrl}
+              alt={item.title}
+              className="w-full h-full object-cover"
+            />
+          )}
+        </div>
+      ))}
+
+      {/* Content Layer */}
+      <div className="absolute top-[30%] left-4 md:left-12 z-30 max-w-2xl pt-5">
+        <div className="flex items-center gap-3 mb-3 animate-fade-in-up">
+          <span className="bg-blue-600/80 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+            {slide.tag || category}
+          </span>
+        </div>
+
+        <h1 className="text-4xl md:text-7xl font-extrabold text-white mb-4 drop-shadow-2xl leading-tight animate-fade-in-up delay-100">
+          {slide.title}
         </h1>
-        <p className="text-gray-200 text-sm md:text-lg line-clamp-3 mb-8 max-w-xl drop-shadow-lg font-medium">
-           {movie.year} • {movie.genre || movie.category} • Watch the latest episode now on Ralla.
-        </p>
-        
-        <div className="flex gap-4">
-          <Link href={`/movie/${movie.id}`} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-full font-bold transition-all shadow-lg hover:scale-105">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-              <path fillRule="evenodd" d="M4.5 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" clipRule="evenodd" />
-            </svg>
+
+        {/* <p className="text-gray-200 text-sm md:text-lg line-clamp-3 mb-8 max-w-xl drop-shadow-lg font-medium animate-fade-in-up delay-200">
+          {slide.description}
+        </p> */}
+
+        <div className="flex gap-4 animate-fade-in-up delay-300">
+          <Link href={slide.link || `/movie/${slide.title}`} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-full font-bold transition-all shadow-lg hover:scale-105">
+            <PlayIcon className="w-5 h-5" />
             Play Now
           </Link>
-          <button className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-8 py-3.5 rounded-full font-bold transition-all border border-white/30">
-             More Info
+          <button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-8 py-3.5 rounded-full font-bold transition-all border border-white/20">
+            <InformationCircleIcon className="w-5 h-5" />
+            More Info
           </button>
         </div>
       </div>
-      
-      {/* Dots */}
+
+      {/* Dots Indicator */}
       <div className="absolute bottom-10 right-8 z-30 flex gap-2">
-        {heroMovies.map((_, index) => (
-            <div key={index} className={`h-2.5 rounded-full transition-all duration-300 ${index === currentMovieIndex ? 'bg-blue-500 w-8' : 'bg-gray-500/50 w-2.5'}`}></div>
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`h-2.5 rounded-full transition-all duration-300 ${index === currentSlide ? 'bg-blue-500 w-8' : 'bg-gray-500/50 w-2.5 hover:bg-gray-400'}`}
+          />
         ))}
       </div>
     </div>
